@@ -6,6 +6,7 @@
 
 import unittest
 import pycket
+from pycket.telemetry_packet import TelemetryPacket
 
 
 class TestPycket(unittest.TestCase):
@@ -63,6 +64,15 @@ class TestPycket(unittest.TestCase):
         except pycket.PycketError as e:
             print(e)
             self.assertTrue('Bad packet size' in e.message)
+
+    def test_003_telemetry_packet(self):
+        print('=' * 80)
+        pyc = TelemetryPacket()
+        raw = pycket.bitstostring('000011000000000010100000000000001000000000000000')
+        ret = pyc.read(raw)
+        print(pyc.for_human())
+        self.assertEqual(ret[0]['raw_value'], '000')
+        self.assertEqual(ret[2]['value'], 1)
 
 
 if __name__ == '__main__':

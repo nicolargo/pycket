@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
 #
 # Copyright (C) 2018 Nicolargo <nicolas@nicolargo.com>
 #
@@ -14,12 +13,13 @@ class PycketError(Exception):
 class Pycket(object):
     """A packet of bits"""
 
-    def __init__(self, packet):
+    def __init__(self, packet=None):
         """ Init a packet
 
         packet: Packet definition (list of dicts)
         """
-        self._packet = packet
+        if packet is not None:
+            self._packet = packet
 
     def __str__(self):
         return pformat(self._packet)
@@ -56,7 +56,14 @@ class Pycket(object):
             if first:
                 ret += '|'
                 first = False
-            ret += i['raw_value']
+            if ('display' in i) and (i['display'] == 'dec'):
+                ret += '{:{len_raw}}'.format(i['value'],
+                                             len_raw=len(i['raw_value']))
+            # elif ('display' in i) and (i['display'] == 'none'):
+            #     ret += '{:{len_raw}}'.format('',
+            #                                  len_raw=len(i['raw_value']))
+            else:
+                ret += i['raw_value']
             ret += '|'
         return ret
 
