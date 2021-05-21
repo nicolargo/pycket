@@ -25,7 +25,7 @@ class Pycket(object):
         return pformat(self._packet)
 
     def for_human(self, header=True, value=True):
-        """Return a human representatio of the current packet
+        """Return a human representation of the current packet
 
         header: True ==> return the header
         value: True ==> add value in the header"""
@@ -33,6 +33,7 @@ class Pycket(object):
         if header:
             ret += self._for_human_header(value=value)
         ret += self._for_human_data()
+
         return ret
 
     def _for_human_header(self, value=True):
@@ -43,10 +44,13 @@ class Pycket(object):
                 head += '|'
                 first = False
             ret += head[:-1] + '┌ ' + i['description']
-            if value:
+            if ('display' in i) and (i['display'] is None):
+                pass
+            elif value:
                 ret += ' = {}'.format(i['value'])
             ret += '\n'
-            head += ' ' * i['size'] + '|'
+            if i['size'] is not None:
+                head += ' ' * i['size'] + '|'
         return ret
 
     def _for_human_data(self):
@@ -59,9 +63,8 @@ class Pycket(object):
             if ('display' in i) and (i['display'] == 'dec'):
                 ret += '{:{len_raw}}'.format(i['value'],
                                              len_raw=len(i['raw_value']))
-            # elif ('display' in i) and (i['display'] == 'none'):
-            #     ret += '{:{len_raw}}'.format('',
-            #                                  len_raw=len(i['raw_value']))
+            elif ('display' in i) and (i['display'] is None):
+                pass
             else:
                 ret += i['raw_value']
             ret += '|'
@@ -74,13 +77,17 @@ class Pycket(object):
         # Add the raw_value and value to the packet
         self._add_raw_value(bits)
         self._raw_to_value()
+        self._raw_to_hex()
         return self._packet
 
     def _add_raw_value(self, bits):
         """Take bits buffer (string of bits) & add raw_value to the packet"""
         begin = end = 0
         for i in self._packet:
-            end += i['size']
+            if i['size'] is not None:
+                end += i['size']
+            else:
+                end = (self._size * 8) - end + begin
             i['raw_value'] = bits[begin:end]
             begin = end
         if end != len(bits):
@@ -93,6 +100,11 @@ class Pycket(object):
         """Convert raw_value to value (human readable)"""
         for i in self._packet:
             i['value'] = int(i['raw_value'], 2)
+
+    def _raw_to_hex(self):
+        """Convert raw_value to hex (most human readable)"""
+        for i in self._packet:
+            i['hex'] = hex(int(i['raw_value'], 2))
 
 
 def bitstostring(b):

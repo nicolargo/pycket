@@ -9,6 +9,7 @@ from pycket import Pycket
 class TelemetryPacket(Pycket):
     """A CCSDS 203.0-B-2 packet"""
 
+    # Size in bits
     _packet = [{'description': 'version_number',
                 'size': 3},
                {'description': 'type',

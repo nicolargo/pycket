@@ -7,6 +7,7 @@
 import unittest
 import pycket
 from pycket.telemetry_packet import TelemetryPacket
+from pycket.telemetry_frame import TelemetryFrame, TelemetryFrameList
 
 
 class TestPycket(unittest.TestCase):
@@ -73,6 +74,11 @@ class TestPycket(unittest.TestCase):
         print(pyc.for_human())
         self.assertEqual(ret[0]['raw_value'], '000')
         self.assertEqual(ret[2]['value'], 1)
+
+    def test_004_telemetry_frame_list(self):
+        print('=' * 80)
+        fl = TelemetryFrameList()
+        ret = fl.read_from_file('./test/frame/LSAT1_2020_01_17_NRM.TLM', display_while_reading=True)
 
 
 if __name__ == '__main__':

@@ -4,16 +4,17 @@
 #
 
 __appname__ = "pycket"
-__version__ = '0.1'
+__version__ = '0.2'
 __author__ = 'Nicolas Hennion <nicolas@nicolargo.com>'
 __license__ = 'MIT'
 
 from .pycket import *
 from .telemetry_packet import *
+from .telemetry_frame import *
 
 __all__ = [
     # Exceptions
     "PycketError",
     # Classes
-    "Pycket", "TelemetryPacket"
+    "Pycket", "TelemetryPacket", "TelemetryFrame", "TelemetryFrameList"
     ]
